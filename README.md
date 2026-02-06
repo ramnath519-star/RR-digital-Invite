@@ -17,7 +17,6 @@
             touch-action: none;
         }
 
-        /* Falling Hearts/Glitters Background */
         .falling-heart {
             position: fixed;
             top: -10vh;
@@ -78,12 +77,7 @@
         }
 
         #yes-btn { background-color: #ff4d6d; color: white; transition: 0.2s; }
-        #no-btn { 
-            background-color: #adb5bd; 
-            color: white; 
-            position: relative; 
-            transition: 0.1s ease; 
-        }
+        #no-btn { background-color: #adb5bd; color: white; position: relative; transition: 0.1s ease; }
 
         #success-msg { display: none; }
         
@@ -110,7 +104,7 @@
 <body onclick="playMusic()">
 
     <audio id="bgMusic" loop>
-        <source src="https://www.mboxdrive.com/JAWNY%20-%20Honeypie.mp3" type="audio/mpeg">
+        <source src="https://www.mboxdrive.com/Ed%20Sheeran%20-%20Shape%20Of%20You.mp3" type="audio/mpeg">
     </audio>
 
     <div class="card">
@@ -147,22 +141,17 @@
         const music = document.getElementById("bgMusic");
 
         function playMusic() { 
-            music.play().catch(() => {
-                console.log("Waiting for interaction...");
-            }); 
+            music.play().catch(() => { console.log("Music will start on interaction"); }); 
         }
 
         function moveNo() {
             playMusic();
             const btn = document.getElementById('no-btn');
             btn.style.position = 'fixed';
-            
             const maxX = window.innerWidth - btn.offsetWidth - 20;
             const maxY = window.innerHeight - btn.offsetHeight - 20;
-            
             const randomX = Math.floor(Math.random() * maxX);
             const randomY = Math.floor(Math.random() * maxY);
-            
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
         }
@@ -170,11 +159,9 @@
         function nextQuestion() {
             playMusic();
             currentStep++;
-
             if (currentStep < questions.length) {
                 document.getElementById('question-text').innerText = questions[currentStep];
                 document.getElementById('step-text').innerText = `Step ${currentStep + 1} of 6`;
-                
                 const noBtn = document.getElementById('no-btn');
                 noBtn.style.position = 'relative';
                 noBtn.style.left = '0';
@@ -213,7 +200,6 @@
             document.body.appendChild(heart);
             setTimeout(() => { heart.remove(); }, 5000);
         }
-
         setInterval(createHeart, 600);
     </script>
 </body>
