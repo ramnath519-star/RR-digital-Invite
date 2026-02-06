@@ -12,17 +12,17 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
-            cursor: pointer; /* Suggests clicking */
+            touch-action: manipulation;
         }
 
-        /* Falling Hearts */
-        .heart-bg {
+        /* Falling Hearts Background */
+        .falling-heart {
             position: fixed;
             top: -10vh;
-            font-size: 20px;
             color: #ff4d6d;
+            font-size: 20px;
             user-select: none;
             z-index: -1;
             animation: fall linear forwards;
@@ -36,120 +36,135 @@
             background: rgba(255, 255, 255, 0.9);
             padding: 40px;
             border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 50px rgba(233, 30, 99, 0.2);
             text-align: center;
-            width: 350px;
+            width: 320px;
             backdrop-filter: blur(10px);
             z-index: 10;
+            border: 2px solid #fff;
         }
 
-        .main-heart { font-size: 70px; animation: pulse 1s infinite alternate; }
+        .main-heart {
+            font-size: 70px;
+            animation: pulse 0.8s infinite alternate;
+            margin-bottom: 10px;
+        }
 
         @keyframes pulse {
             from { transform: scale(1); }
-            to { transform: scale(1.1); }
+            to { transform: scale(1.15); }
         }
 
-        h1 { color: #d63384; margin: 20px 0; font-size: 24px; }
-        p.tap-hint { font-size: 12px; color: #999; margin-top: -10px; }
+        h1 { color: #d63384; font-size: 24px; margin: 15px 0; }
+        .tap-hint { font-size: 11px; color: #a5a5a5; margin-bottom: 20px; }
 
-        .button-box {
+        .btn-container {
             display: flex;
             justify-content: center;
             gap: 20px;
-            margin-top: 30px;
+            margin-top: 20px;
             height: 50px;
         }
 
-        .btn {
+        button {
             padding: 12px 30px;
             font-size: 18px;
             font-weight: bold;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
         }
 
-        #yes-btn { background-color: #ff4d6d; color: white; transition: 0.3s; }
-        #yes-btn:hover { transform: scale(1.1); background-color: #ff758c; }
+        #yes-btn {
+            background-color: #ff4d6d;
+            color: white;
+            z-index: 100;
+        }
 
-        #no-btn { 
-            background-color: #adb5bd; 
-            color: white; 
-            position: absolute; 
-            transition: 0.1s; /* Quick jump */
+        #no-btn {
+            background-color: #adb5bd;
+            color: white;
+            position: absolute; /* Needed for the runaway jump */
+            transition: 0.1s ease-in-out;
         }
 
         #success-msg { display: none; }
-        #success-msg h2 { color: #ff4d6d; font-size: 28px; margin-bottom: 10px; }
+        #success-msg h2 { color: #d63384; font-size: 28px; }
     </style>
 </head>
-<body onclick="startMusic()">
+<body onclick="playMusic()">
 
     <audio id="bgMusic" loop>
-        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
     <div class="card">
-        <div id="proposal-content">
+        <div id="proposal-box">
             <div class="main-heart">💖</div>
             <h1>Rishitha, will you be my Valentine?</h1>
             <p class="tap-hint">(Tap anywhere for music 🎵)</p>
-            <div class="button-box">
-                <button id="yes-btn" class="btn" onclick="celebrate()">Yes</button>
-                <button id="no-btn" class="btn" onmouseover="moveNo()" onclick="moveNo()">No</button>
+            
+            <div class="btn-container" id="actions">
+                <button id="yes-btn" onclick="sayYes()">Yes</button>
+                <button id="no-btn" onmouseover="moveNo()" onclick="moveNo()">No</button>
             </div>
         </div>
 
         <div id="success-msg">
             <div class="main-heart">🥰</div>
             <h2>Yay! ❤️</h2>
-            <p>You've made me the luckiest person, Rishitha!</p>
+            <p>I knew you'd say yes, Rishitha!</p>
         </div>
     </div>
 
     <script>
-        const audio = document.getElementById("bgMusic");
+        const music = document.getElementById("bgMusic");
 
-        function startMusic() {
-            audio.play();
+        // Browsers require a click to play music
+        function playMusic() {
+            music.play().catch(e => console.log("Waiting for user interaction"));
         }
 
-        // Logic for the runaway button
+        // The "Runaway" logic
         function moveNo() {
+            playMusic(); // Starts music if they try to click 'No'
             const btn = document.getElementById('no-btn');
-            // Logic to keep button inside the screen area
-            const x = Math.floor(Math.random() * (window.innerWidth - btn.offsetWidth - 20));
-            const y = Math.floor(Math.random() * (window.innerHeight - btn.offsetHeight - 20));
-
+            
+            // Random position within the browser window
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            
             btn.style.position = 'fixed';
             btn.style.left = x + 'px';
             btn.style.top = y + 'px';
         }
 
-        // Logic for when she says Yes
-        function celebrate() {
-            document.getElementById('proposal-content').style.display = 'none';
+        // When she says Yes
+        function sayYes() {
+            playMusic();
+            document.getElementById('proposal-box').style.display = 'none';
             document.getElementById('success-msg').style.display = 'block';
             
-            // Increase falling heart speed for celebration
+            // Celebration: Fast falling hearts
             setInterval(createHeart, 100);
         }
 
-        // Falling heart background generator
+        // Heart generation
         function createHeart() {
             const heart = document.createElement('div');
-            heart.className = 'heart-bg';
+            heart.className = 'falling-heart';
             heart.innerHTML = '❤️';
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            heart.style.opacity = Math.random();
             document.body.appendChild(heart);
             setTimeout(() => { heart.remove(); }, 5000);
         }
 
-        // Initialize slow falling hearts
-        setInterval(createHeart, 500);
+        // Initial slow hearts
+        setInterval(createHeart, 600);
     </script>
 </body>
 </html>
